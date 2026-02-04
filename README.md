@@ -19,7 +19,7 @@
 16. - (Paste a screenshot of a successful GET request here)
 
   <img width="1365" height="722" alt="Screenshot 2026-01-28 234016" src="https://github.com/user-attachments/assets/3e795f02-182c-4aab-b7e7-1970fd9ab115" />
-17. ** final testing:**
+17. ** testing screenshot:**
 
 <img width="1363" height="722" alt="Screenshot 2026-02-04 233158" src="https://github.com/user-attachments/assets/2643b90d-495a-4cad-906e-1fd0c515ae07" />
 
