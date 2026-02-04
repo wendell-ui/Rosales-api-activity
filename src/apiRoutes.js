@@ -4,7 +4,7 @@ const data = require('./models/roomModel');
 
 // GET Routes for /rooms with optional filtering
 router.get('/rooms', (req, res) => {
-  const { type, price, name, isAvailable } = req.query;
+  const { type, price, name, is } = req.query;
 
   let filteredRooms = data
     .filter(room =>
