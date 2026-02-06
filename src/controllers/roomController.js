@@ -1,5 +1,6 @@
 const Room = require('../models/roomModel');
 
+
 //1. Get all: list all rooms
 
 const getAllRooms = async (req, res) => {

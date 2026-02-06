@@ -6,8 +6,8 @@ const apiRoutes = require( './src/routes/apiRoutes' );
 const app = express();
 connectDB( );
 
-app.use( process.env.BASE_URI, apiRoutes);
 app.use(express.json());
+app.use( process.env.BASE_URI, apiRoutes);
 app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 3000;
@@ -17,3 +17,5 @@ app.listen(PORT, () => {
 console.log(`Server running on port ${PORT}`);
 console.log(`Base URI: http://Localhost:${PORT}${BASE_URI}`);
 });
+
+module.exports = app;
