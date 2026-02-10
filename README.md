@@ -24,3 +24,7 @@
 <img width="1363" height="725" alt="Screenshot 2026-02-06 154650" src="https://github.com/user-attachments/assets/b8bc13c8-316a-49dd-9e64-7c6de0476764" />
 
 
+18. - Why did I choose to Embed the Maintenance Log?
+ - I chose to embed the maintenance log because it is directly related to a specific room and is not used independently. The maintenance history is always accessed together with the room information, so embedding it inside the room document improves data consistency and retrieval efficiency.
+19. - Why did I choose to Reference the Guest?
+- I chose to reference the guest because a guest can exist independently and may have multiple bookings over time. Referencing avoids data duplication and allows the same guest information to be reused across different bookings.
