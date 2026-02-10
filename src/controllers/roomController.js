@@ -67,10 +67,25 @@ const deleteRoom = async (req, res) => {
     }
 };
 
+const addMaintenanceLog = async (req, res) => {
+    try {
+        const room = await Room.findByIdAndUpdate(
+            req.params.id,
+            { $push: { maintenanceLog: req.body } },
+            { new: true }
+        );
+        res.json(room);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+
 module.exports = {
     getAllRooms,
     createRoom,
     getRoomById,
     updateRoom,
-    deleteRoom
+    deleteRoom,
+    addMaintenanceLog
 };

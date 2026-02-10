@@ -12,13 +12,34 @@ const roomSchema = new mongoose.Schema({
     },
     price: {
         type: Number,
-        required: true
+        required: true,
+        min: [0, 'Price cannot be negative'],
     },
     isBooked: {
         type: Boolean,
         default: false,
     },
     features: [String],
+
+//Embedded: Maintenance Log
+
+maintenanceLog: [
+    {
+        date: { 
+            type: Date,
+            default: Date.now,
+        },
+        issue: {
+            type: String
+        },
+        fixed: {
+            type: Boolean,
+            
+        }
+            
+    }
+]
+
 });
 
 module.exports = mongoose.model('Room', roomSchema);
