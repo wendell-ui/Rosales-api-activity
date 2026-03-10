@@ -16,10 +16,22 @@ const getAllRooms = async (req, res) => {
 
 const createRoom = async (req, res) => {
     try {
-        const newRoom = await Room.create(req.body);
+        const { name, type, price, isBooked, features } = req.body;
+
+        // validate the fields our schema actually requires
+        if (!name || !type || price === undefined) {
+            return res.status(400).json({
+                message: 'name, type, and price are required'
+            });
+        }
+
+        const newRoom = await Room.create({ name, type, price, isBooked, features });
         res.status(201).json(newRoom);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ message: error.message });
+        }
+        res.status(500).json({ message: error.message });
     }
 };
 

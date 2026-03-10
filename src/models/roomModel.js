@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const roomSchema = new mongoose.Schema({
-    roomNumber: {
-        type: Number,
+    name: {
+        type: String,
         required: true,
         unique: true,
     },
@@ -21,25 +21,21 @@ const roomSchema = new mongoose.Schema({
     },
     features: [String],
 
-//Embedded: Maintenance Log
-
-maintenanceLog: [
-    {
-        date: { 
-            type: Date,
-            default: Date.now,
-        },
-        issue: {
-            type: String
-        },
-        fixed: {
-            type: Boolean,
-            
+    //Embedded: Maintenance Log
+    maintenanceLog: [
+        {
+            date: { 
+                type: Date,
+                default: Date.now,
+            },
+            issue: {
+                type: String
+            },
+            fixed: {
+                type: Boolean,
+            }
         }
-            
-    }
-]
-
+    ]
 });
 
 module.exports = mongoose.model('Room', roomSchema);
