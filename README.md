@@ -28,3 +28,53 @@
  - I chose to embed the maintenance log because it is directly related to a specific room and is not used independently. The maintenance history is always accessed together with the room information, so embedding it inside the room document improves data consistency and retrieval efficiency.
 19. - Why did I choose to Reference the Guest?
 - I chose to reference the guest because a guest can exist independently and may have multiple bookings over time. Referencing avoids data duplication and allows the same guest information to be reused across different bookings.
+
+Hands-on Activity #4: Securing the API
+Questions & Answers
+
+1. Authentication vs Authorization
+
+*Question: What is the difference between Authentication and Authorization in our code?
+
+Answer:
+
+*Authentication is the process of verifying the identity of a user. In our code, this happens when a user logs in with their email and password. The server checks the credentials, and if correct, returns a JWT token.
+
+*Authorization is the process of verifying what an authenticated user is allowed to do. In our code, the authorize middleware checks the user's role (e.g., admin, manager, user) to allow or
+
+2. Security (bcrypt)
+
+*Question: Why did we use bcryptjs instead of saving passwords as plain text in MongoDB?
+
+Answer:
+*We use bcryptjs to hash passwords before saving them in the database. Hashing converts the plain password into a secure, irreversible string. This is important because:
+*If the database is ever compromised, attackers cannot see users’ actual passwords.
+*Bcrypt adds a salt to protect against dictionary attacks and rainbow tables.
+*It ensures that even if two users have the same password, their hashes will be different.
+*Saving passwords as plain text would be extremely insecure and puts users at risk.
+
+3. JWT Structure
+
+*Question: What does the protect middleware do when it receives a JWT from the client?
+
+Answer:
+*The protect middleware is responsible for authenticating requests using the JWT. When a client sends a token:
+*It extracts the token from the Authorization header, body, or query.
+*It verifies the token using JWT_SECRET to ensure it is valid and not expired.
+*It decodes the token to get the user ID and role.
+*It fetches the user from the database (excluding the password) and attaches it to req.user.
+*If the token is missing, invalid, or expired, it blocks access and returns a 401 Unauthorized error.
+*This allows only authenticated users to access protected routes and works together with the authorize middleware for role-based access control.
+
+#Screenshot Result
+
+#Register User
+<img width="1365" height="722" alt="Screenshot 2026-03-10 205159" src="https://github.com/user-attachments/assets/daf2aaf2-8f40-4043-b121-af63c5de317f" />
+
+#Login User 
+<img width="1362" height="718" alt="Screenshot 2026-03-10 205315" src="https://github.com/user-attachments/assets/27f0ec91-ac01-4f86-9899-0d6c3764087a" />
+
+#ACCESS PROTECTED ROUTE (CREATE ROOMS)
+<img width="1365" height="716" alt="Screenshot 2026-03-10 212511" src="https://github.com/user-attachments/assets/dd82aa12-26a1-4adf-9994-f51ddee30d8c" />
+
+
