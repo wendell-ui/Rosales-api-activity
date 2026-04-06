@@ -72,6 +72,21 @@
 **What is the role of supertest in our test file? Why didn't we use Postman for this?**
 
 **Answer:** Supertest is a library that allows us to programmatically test HTTP endpoints by simulating HTTP requests to our Express application. It acts as an HTTP client that can send GET, POST, PUT, DELETE requests and examine the responses. We didn't use Postman because Supertest integrates directly with our test suite, allowing automated testing that can be run repeatedly as part of our CI/CD pipeline. Unlike Postman which is manual and GUI-based, Supertest enables programmatic assertions, test organization, and automated execution alongside our other unit tests.
+
+### 7. E2E vs Integration
+**How does this End-to-End test differ from the Integration test we wrote in Activity 6? (Think about the database and the server status).**
+
+**Answer:** The key differences between E2E and Integration tests are significant. Integration tests (Activity 6) run the code internally within the test suite using an in-memory database (mongodb-memory-server), and the Express server doesn't actually listen to a port - tests interact directly with the app object. E2E tests (Activity 7), however, test the system exactly as a real user would - the actual server is running on a real port (localhost:3000), real HTTP requests are made over the network, and the real MongoDB connection is used. E2E tests validate the complete workflow from a user's perspective, including network communication, while integration tests verify components working together in isolation. E2E tests also test the actual routing, middleware execution order, and real-world conditions that users experience.
+
+### 8. Request Chaining
+**Explain how we managed to pass the JWT token from the Login request to the Create Resource request without manually copying and pasting it.**
+
+**Answer:** Postman's test scripting feature enables request chaining through environment variables. After the Login request receives a JWT token in the response, our test script extracts it using `pm.response.json()` and stores it in an environment variable with `pm.environment.set("jwt_token", jsonData.token)`. Subsequently, any request can reference this token using the `{{jwt_token}}` syntax in headers or body. When the Create Room request executes, Postman automatically replaces `{{jwt_token}}` with the actual token value that was saved from the Login response. This allows requests to share data dynamically without manual intervention, enabling complex multi-step workflows.
+
+### 9. CI/CD Purpose
+**Why is it useful to run tests in the terminal using Newman instead of just using the Postman Graphical User Interface (GUI)?**
+
+**Answer:** Running tests in the terminal using Newman enables automation and integration with CI/CD (Continuous Integration/Continuous Deployment) pipelines. GUI-based testing requires human interaction and cannot be automated in deployment systems like GitHub Actions, Jenkins, or GitLab CI. Newman CLI allows tests to run programmatically whenever code is pushed, enabling organizations to automatically validate that new changes don't break existing functionality before deployment. Terminal-based testing is scriptable, can generate reports in various formats, runs faster without GUI overhead, and can be executed on servers that don't have graphical interfaces. It transforms manual testing into automated quality assurance.
 >>>>>>> 488341ee5c23aeaefbf1b8e6568622a0bb5964bb
 Hands-on Activity #4: Securing the API
 Questions & Answers
@@ -133,6 +148,38 @@ Hands-on Activity #5: The Testing Triangle - Comprehensive Unit Testing & Docume
 | UT-004 | RoomController | getAllRooms | Database throws a connection error | HTTP 500, Error JSON Message | Pass |
 | UT-005 | RoomController | createRoom | Create a new room with valid data | HTTP 201, New Room Object | Pass |
 
+## End-to-End Testing with Postman & Newman
+
+### E2E Test Workflow
+The complete end-to-end testing workflow demonstrates a realistic user journey:
+
+1. **Register Admin User** - Creates a new admin account with credentials
+2. **Login User** - Authenticates and receives a JWT token (automatically captured)
+3. **Create Room** - Uses the saved JWT token to create a room resource
+4. **Get All Rooms** - Verifies the created room is persisted in the database
+
+### Newman Test Results
+```
+newman run collection.json -e environment.json
+
+✓ Status code is 201 Created
+✓ Response has user data
+✓ Status code is 200 OK
+✓ Response has a JWT token
+✓ Room successfully created (201)
+✓ Response has room data
+✓ Status code is 200 OK
+✓ Response is an array
+✓ Array contains the room we just created
+
+Total Assertions: 9 passed, 0 failed
+Total Run Duration: 1655ms
+```
+
+### Files Included
+- `collection.json` - Postman collection with all E2E test requests and scripts
+- `environment.json` - Environment variables (baseUrl, jwt_token, room_id)
+
 ## Essay Questions
 
 ### 1. Mocking
@@ -150,6 +197,17 @@ Hands-on Activity #5: The Testing Triangle - Comprehensive Unit Testing & Docume
 
 **Answer:** We used jest.fn() for the next variable to create a mock function (spy) that tracks whether it has been called during the test. This allows us to verify the middleware's behavior - specifically, whether it continues to the next middleware in the chain or stops execution. In the failure scenario (no token provided), we assert that next was not called because the middleware should block the request by sending a 401 error response instead of proceeding to the next middleware. This ensures that unauthorized requests are properly rejected and don't continue through the application pipeline.
 
+### 4. E2E vs Integration
+**How does this End-to-End test differ from the Integration test we wrote in Activity 6? (Think about the database and the server status).**
 
+**Answer:** The key differences between E2E and Integration tests are significant. Integration tests (Activity 6) run the code internally within the test suite using an in-memory database (mongodb-memory-server), and the Express server doesn't actually listen to a port - tests interact directly with the app object. E2E tests (Activity 7), however, test the system exactly as a real user would - the actual server is running on a real port (localhost:3000), real HTTP requests are made over the network, and the real MongoDB connection is used. E2E tests validate the complete workflow from a user's perspective, including network communication, while integration tests verify components working together in isolation. E2E tests also test the actual routing, middleware execution order, and real-world conditions that users experience.
 
->>>>>>> c53b4a3c9197ab1d4655ba8d51d4db119b6f8d92
+### 5. Request Chaining
+**Explain how we managed to pass the JWT token from the Login request to the Create Resource request without manually copying and pasting it.**
+
+**Answer:** Postman's test scripting feature enables request chaining through environment variables. After the Login request receives a JWT token in the response, our test script extracts it using `pm.response.json()` and stores it in an environment variable with `pm.environment.set("jwt_token", jsonData.token)`. Subsequently, any request can reference this token using the `{{jwt_token}}` syntax in headers or body. When the Create Room request executes, Postman automatically replaces `{{jwt_token}}` with the actual token value that was saved from the Login response. This allows requests to share data dynamically without manual intervention, enabling complex multi-step workflows.
+
+### 6. CI/CD Purpose
+**Why is it useful to run tests in the terminal using Newman instead of just using the Postman Graphical User Interface (GUI)?**
+
+**Answer:** Running tests in the terminal using Newman enables automation and integration with CI/CD (Continuous Integration/Continuous Deployment) pipelines. GUI-based testing requires human interaction and cannot be automated in deployment systems like GitHub Actions, Jenkins, or GitLab CI. Newman CLI allows tests to run programmatically whenever code is pushed, enabling organizations to automatically validate that new changes don't break existing functionality before deployment. Terminal-based testing is scriptable, can generate reports in various formats, runs faster without GUI overhead, and can be executed on servers that don't have graphical interfaces. It transforms manual testing into automated quality assurance.
