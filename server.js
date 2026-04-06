@@ -23,10 +23,12 @@ app.use((req, res) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Base URI: http://localhost:${PORT}${BASE_URI}`);
-});
+// ONLY start the server if we are NOT running tests
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(process.env.PORT || 3000, () => {
+    console.log(`Server running on port ${process.env.PORT}`);
+  });
+}
 
+// Export the app so Supertest can use it!
 module.exports = app;

@@ -55,6 +55,23 @@
 **In our authMiddleware.test.js, why did we use jest.fn() for the next variable, and why did we assert expect(next).not.toHaveBeenCalled() in the failure scenario?**
 
 **Answer:** We used jest.fn() for the next variable to create a mock function (spy) that tracks whether it has been called during the test. This allows us to verify the middleware's behavior - specifically, whether it continues to the next middleware in the chain or stops execution. In the failure scenario (no token provided), we assert that next was not called because the middleware should block the request by sending a 401 error response instead of proceeding to the next middleware. This ensures that unauthorized requests are properly rejected and don't continue through the application pipeline.
+
+
+### Hands-on Activity #6: The Testing Triangle - Integration Testing
+### Unit vs. Integration
+**Explain the difference between the Unit Test you wrote in Activity 5 and the Integration Test you wrote today. What does the Integration Test check that the Unit Test does not?**
+
+**Answer:** Unit tests focus on testing individual functions or modules in isolation, mocking external dependencies like databases and third-party libraries. The unit tests we wrote tested the roomController and authMiddleware functions separately with mocked database calls. Integration tests, however, test the entire application flow end-to-end, including real database interactions and multiple components working together. The integration test checks that the complete API endpoint works correctly - from receiving the HTTP request, through authentication, business logic, database operations, and response generation - which unit tests cannot verify since they isolate each component.
+
+### 5. In-Memory Databases
+**Why did we install mongodb-memory-server instead of just connecting our tests to our real MongoDB Atlas URI? Mention at least two reasons.**
+
+**Answer:** We used mongodb-memory-server to create an in-memory database for testing instead of connecting to the real MongoDB Atlas URI for several important reasons. First, it provides test isolation - each test suite gets a fresh, clean database that doesn't interfere with other tests or the production data. Second, it makes tests faster and more reliable by avoiding network latency and potential connection issues with the remote Atlas database. Third, it prevents accidental data pollution of the production database during testing. Fourth, it allows tests to run in any environment without requiring internet access or Atlas credentials.
+
+### 6. Supertest
+**What is the role of supertest in our test file? Why didn't we use Postman for this?**
+
+**Answer:** Supertest is a library that allows us to programmatically test HTTP endpoints by simulating HTTP requests to our Express application. It acts as an HTTP client that can send GET, POST, PUT, DELETE requests and examine the responses. We didn't use Postman because Supertest integrates directly with our test suite, allowing automated testing that can be run repeatedly as part of our CI/CD pipeline. Unlike Postman which is manual and GUI-based, Supertest enables programmatic assertions, test organization, and automated execution alongside our other unit tests.
 Hands-on Activity #4: Securing the API
 Questions & Answers
 
