@@ -87,7 +87,6 @@
 **Why is it useful to run tests in the terminal using Newman instead of just using the Postman Graphical User Interface (GUI)?**
 
 **Answer:** Running tests in the terminal using Newman enables automation and integration with CI/CD (Continuous Integration/Continuous Deployment) pipelines. GUI-based testing requires human interaction and cannot be automated in deployment systems like GitHub Actions, Jenkins, or GitLab CI. Newman CLI allows tests to run programmatically whenever code is pushed, enabling organizations to automatically validate that new changes don't break existing functionality before deployment. Terminal-based testing is scriptable, can generate reports in various formats, runs faster without GUI overhead, and can be executed on servers that don't have graphical interfaces. It transforms manual testing into automated quality assurance.
->>>>>>> 488341ee5c23aeaefbf1b8e6568622a0bb5964bb
 Hands-on Activity #4: Securing the API
 Questions & Answers
 
@@ -199,6 +198,22 @@ Total Run Duration: 1655ms
 
 ### 4. E2E vs Integration
 **How does this End-to-End test differ from the Integration test we wrote in Activity 6? (Think about the database and the server status).**
+Hands-on Activity #6: The Testing Triangle - Integration Testing
+Unit vs. Integration
+Explain the difference between the Unit Test you wrote in Activity 5 and the Integration Test you wrote today. What does the Integration Test check that the Unit Test does not?
+
+Answer: Unit tests focus on testing individual functions or modules in isolation, mocking external dependencies like databases and third-party libraries. The unit tests we wrote tested the roomController and authMiddleware functions separately with mocked database calls. Integration tests, however, test the entire application flow end-to-end, including real database interactions and multiple components working together. The integration test checks that the complete API endpoint works correctly - from receiving the HTTP request, through authentication, business logic, database operations, and response generation - which unit tests cannot verify since they isolate each component.
+
+5. In-Memory Databases
+Why did we install mongodb-memory-server instead of just connecting our tests to our real MongoDB Atlas URI? Mention at least two reasons.
+
+Answer: We used mongodb-memory-server to create an in-memory database for testing instead of connecting to the real MongoDB Atlas URI for several important reasons. First, it provides test isolation - each test suite gets a fresh, clean database that doesn't interfere with other tests or the production data. Second, it makes tests faster and more reliable by avoiding network latency and potential connection issues with the remote Atlas database. Third, it prevents accidental data pollution of the production database during testing. Fourth, it allows tests to run in any environment without requiring internet access or Atlas credentials.
+
+6. Supertest
+What is the role of supertest in our test file? Why didn't we use Postman for this?
+
+Answer: Supertest is a library that allows us to programmatically test HTTP endpoints by simulating HTTP requests to our Express application. It acts as an HTTP client that can send GET, POST, PUT, DELETE requests and examine the responses. We didn't use Postman because Supertest integrates directly with our test suite, allowing automated testing that can be run repeatedly as part of our CI/CD pipeline. Unlike Postman which is manual and GUI-based, Supertest enables programmatic assertions, test organization, and automated execution alongside our other unit tests.
+
 
 **Answer:** The key differences between E2E and Integration tests are significant. Integration tests (Activity 6) run the code internally within the test suite using an in-memory database (mongodb-memory-server), and the Express server doesn't actually listen to a port - tests interact directly with the app object. E2E tests (Activity 7), however, test the system exactly as a real user would - the actual server is running on a real port (localhost:3000), real HTTP requests are made over the network, and the real MongoDB connection is used. E2E tests validate the complete workflow from a user's perspective, including network communication, while integration tests verify components working together in isolation. E2E tests also test the actual routing, middleware execution order, and real-world conditions that users experience.
 
