@@ -29,50 +29,6 @@
 19. - Why did I choose to Reference the Guest?
 - I chose to reference the guest because a guest can exist independently and may have multiple bookings over time. Referencing avoids data duplication and allows the same guest information to be reused across different bookings.
 
-## Test Specification Document
-
-| Test ID | Module | Function | Scenario (Description) | Expected Output | Status |
-|---------|--------|----------|-------------------------|-----------------|--------|
-| UT-001 | AuthMiddleware | protect | Valid Bearer token provided | next() function is called | Pass |
-| UT-002 | AuthMiddleware | protect | Request missing Authorization header | HTTP 401, "Not authorized, no token provided" | Pass |
-| UT-003 | RoomController | getAllRooms | Fetch all rooms successfully | HTTP 200, Array of Room Objects | Pass |
-| UT-004 | RoomController | getAllRooms | Database throws a connection error | HTTP 500, Error JSON Message | Pass |
-| UT-005 | RoomController | createRoom | Create a new room with valid data | HTTP 201, New Room Object | Pass |
-
-## Essay Questions
-
-### 1. Mocking
-**Explain in your own words why we mocked Room.find and jwt.verify. What specific problem does mocking solve in Unit Testing?**
-
-**Answer:** We mocked Room.find and jwt.verify to isolate the code under test from external dependencies. Room.find is a database operation that would require a real database connection, and jwt.verify involves cryptographic operations and external library behavior. Mocking solves the problem of making unit tests unreliable and slow due to dependencies on external systems, databases, or network calls. By mocking these functions, we can control their behavior, simulate different scenarios (like successful database queries or JWT verification failures), and ensure our tests run quickly and consistently without needing actual database connections or valid JWT tokens.
-
-### 2. Code Coverage
-**Look at your Jest Coverage report. Explain what % Branch coverage means. If your Branch coverage is at 54.54%, what does that tell you about your tests? (Hint: Think about if/else statements).**
-
-**Answer:** Branch coverage measures the percentage of decision points (branches) in the code that have been executed during testing. Branches typically occur in conditional statements like if/else, switch cases, and loops. A branch coverage of 54.54% means that only about half of the possible execution paths through conditional logic have been tested. This indicates that there are untested branches in the codebase, such as the else parts of if statements or alternative conditions in switch statements, which could contain bugs or unhandled edge cases that haven't been validated by the current test suite.
-
-### 3. Testing Middleware
-**In our authMiddleware.test.js, why did we use jest.fn() for the next variable, and why did we assert expect(next).not.toHaveBeenCalled() in the failure scenario?**
-
-**Answer:** We used jest.fn() for the next variable to create a mock function (spy) that tracks whether it has been called during the test. This allows us to verify the middleware's behavior - specifically, whether it continues to the next middleware in the chain or stops execution. In the failure scenario (no token provided), we assert that next was not called because the middleware should block the request by sending a 401 error response instead of proceeding to the next middleware. This ensures that unauthorized requests are properly rejected and don't continue through the application pipeline.
-
-
-### Hands-on Activity #6: The Testing Triangle - Integration Testing
-### Unit vs. Integration
-**Explain the difference between the Unit Test you wrote in Activity 5 and the Integration Test you wrote today. What does the Integration Test check that the Unit Test does not?**
-
-**Answer:** Unit tests focus on testing individual functions or modules in isolation, mocking external dependencies like databases and third-party libraries. The unit tests we wrote tested the roomController and authMiddleware functions separately with mocked database calls. Integration tests, however, test the entire application flow end-to-end, including real database interactions and multiple components working together. The integration test checks that the complete API endpoint works correctly - from receiving the HTTP request, through authentication, business logic, database operations, and response generation - which unit tests cannot verify since they isolate each component.
-
-### 5. In-Memory Databases
-**Why did we install mongodb-memory-server instead of just connecting our tests to our real MongoDB Atlas URI? Mention at least two reasons.**
-
-**Answer:** We used mongodb-memory-server to create an in-memory database for testing instead of connecting to the real MongoDB Atlas URI for several important reasons. First, it provides test isolation - each test suite gets a fresh, clean database that doesn't interfere with other tests or the production data. Second, it makes tests faster and more reliable by avoiding network latency and potential connection issues with the remote Atlas database. Third, it prevents accidental data pollution of the production database during testing. Fourth, it allows tests to run in any environment without requiring internet access or Atlas credentials.
-
-### 6. Supertest
-**What is the role of supertest in our test file? Why didn't we use Postman for this?**
-
-**Answer:** Supertest is a library that allows us to programmatically test HTTP endpoints by simulating HTTP requests to our Express application. It acts as an HTTP client that can send GET, POST, PUT, DELETE requests and examine the responses. We didn't use Postman because Supertest integrates directly with our test suite, allowing automated testing that can be run repeatedly as part of our CI/CD pipeline. Unlike Postman which is manual and GUI-based, Supertest enables programmatic assertions, test organization, and automated execution alongside our other unit tests.
->>>>>>> 488341ee5c23aeaefbf1b8e6568622a0bb5964bb
 Hands-on Activity #4: Securing the API
 Questions & Answers
 
@@ -149,6 +105,22 @@ Hands-on Activity #5: The Testing Triangle - Comprehensive Unit Testing & Docume
 **In our authMiddleware.test.js, why did we use jest.fn() for the next variable, and why did we assert expect(next).not.toHaveBeenCalled() in the failure scenario?**
 
 **Answer:** We used jest.fn() for the next variable to create a mock function (spy) that tracks whether it has been called during the test. This allows us to verify the middleware's behavior - specifically, whether it continues to the next middleware in the chain or stops execution. In the failure scenario (no token provided), we assert that next was not called because the middleware should block the request by sending a 401 error response instead of proceeding to the next middleware. This ensures that unauthorized requests are properly rejected and don't continue through the application pipeline.
+
+Hands-on Activity #6: The Testing Triangle - Integration Testing
+Unit vs. Integration
+Explain the difference between the Unit Test you wrote in Activity 5 and the Integration Test you wrote today. What does the Integration Test check that the Unit Test does not?
+
+Answer: Unit tests focus on testing individual functions or modules in isolation, mocking external dependencies like databases and third-party libraries. The unit tests we wrote tested the roomController and authMiddleware functions separately with mocked database calls. Integration tests, however, test the entire application flow end-to-end, including real database interactions and multiple components working together. The integration test checks that the complete API endpoint works correctly - from receiving the HTTP request, through authentication, business logic, database operations, and response generation - which unit tests cannot verify since they isolate each component.
+
+5. In-Memory Databases
+Why did we install mongodb-memory-server instead of just connecting our tests to our real MongoDB Atlas URI? Mention at least two reasons.
+
+Answer: We used mongodb-memory-server to create an in-memory database for testing instead of connecting to the real MongoDB Atlas URI for several important reasons. First, it provides test isolation - each test suite gets a fresh, clean database that doesn't interfere with other tests or the production data. Second, it makes tests faster and more reliable by avoiding network latency and potential connection issues with the remote Atlas database. Third, it prevents accidental data pollution of the production database during testing. Fourth, it allows tests to run in any environment without requiring internet access or Atlas credentials.
+
+6. Supertest
+What is the role of supertest in our test file? Why didn't we use Postman for this?
+
+Answer: Supertest is a library that allows us to programmatically test HTTP endpoints by simulating HTTP requests to our Express application. It acts as an HTTP client that can send GET, POST, PUT, DELETE requests and examine the responses. We didn't use Postman because Supertest integrates directly with our test suite, allowing automated testing that can be run repeatedly as part of our CI/CD pipeline. Unlike Postman which is manual and GUI-based, Supertest enables programmatic assertions, test organization, and automated execution alongside our other unit tests.
 
 
 
